@@ -1,11 +1,13 @@
 module Game.Base exposing (initialState, update, view, Model, Msg, startGame)
 
 import Html exposing (Html)
-import Svg exposing (..)
-import Svg.Attributes exposing (..)
 
 import Game.Player exposing (..)
 import Game.Player exposing (PlayerType(..))
+import Game.Player exposing (Team(..))
+import Game.BoardRenderer as BoardRenderer
+import Game.Board as Board
+import Game.Board exposing (Board)
 
 import Debug
 
@@ -18,10 +20,12 @@ type alias Model =
   { gameState : GameState
   , player1 : Player
   , player2 : Player
+  , board : Board
   }
 
 type Msg
   = StartGame Player Player
+  | BoardMsg BoardRenderer.Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -36,27 +40,26 @@ update msg model =
           }
       in
         (newModel, Cmd.none)
+    BoardMsg boardMsg ->
+      (model, Cmd.none)
 
 view : Model -> Html Msg
 view model =
-  case model.gameState of
-    Stopped ->
-      Svg.rect [ width "50", height "100" ] []
-    _ ->
-      Svg.rect [ width "100", height "100" ] []
+  Html.map BoardMsg (BoardRenderer.render model.board)
 
 initialState : Model
 initialState =
   { gameState = Stopped
-  , player1 = Player None 0
-  , player2 = Player None 0
+  , player1 = Player None Cross
+  , player2 = Player None Circle
+  , board = Board.initFiveByFive
   }
 
 startGame : String -> String -> Msg
 startGame player1type player2type =
   let
-    player1 = Player (playerType player1type) 1
-    player2 = Player (playerType player2type) 2
+    player1 = Player (playerType player1type) Cross
+    player2 = Player (playerType player2type) Circle
   in
     StartGame player1 player2
 

@@ -1,14 +1,15 @@
-module Game.Player exposing (PlayerType(..), PlayerId, Player)
+module Game.Player exposing (PlayerType(..), Team(..), Player)
 
 type PlayerType
   = AI
   | Human
   | None
 
-type alias PlayerId =
-  Int
+type Team
+ = Cross
+ | Circle
 
 type alias Player =
   { playerType : PlayerType
-  , playerId : PlayerId
+  , team : Team
   }
