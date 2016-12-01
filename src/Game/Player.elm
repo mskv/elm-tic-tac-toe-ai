@@ -1,8 +1,9 @@
-module Game.Player exposing (PlayerType, PlayerId, Player)
+module Game.Player exposing (PlayerType(..), PlayerId, Player)
 
 type PlayerType
   = AI
   | Human
+  | None
 
 type alias PlayerId =
   Int

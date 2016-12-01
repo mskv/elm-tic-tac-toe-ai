@@ -30,12 +30,15 @@ init =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+    GameMsg gameMsg ->
+      let
+        (newGame, newMsg) = Game.update gameMsg model.game
+      in
+        ({ model | game = newGame }, Cmd.map GameMsg newMsg)
     SelectFirstPlayerType playerType ->
       ({ model | firstPlayerDropdownValue = playerType }, Cmd.none)
     SelectSecondPlayerType playerType ->
       ({ model | secondPlayerDropdownValue = playerType }, Cmd.none)
-    _ ->
-      (model, Cmd.none)
 
 view : Model -> Html Msg
 view model =
@@ -45,6 +48,7 @@ view model =
         , selectPlayerType SelectFirstPlayerType
         , span [ Html.Attributes.style [ ("margin-left", "10px") ] ] [ text "Second player: " ]
         , selectPlayerType SelectSecondPlayerType
+        , startGameButton model
         ]
     , svgContainer
         [ Html.map GameMsg (Game.view model.game) ]
@@ -86,3 +90,13 @@ selectPlayerType onSelection =
     , option [ value "AI" ] [ text "AI" ]
     ]
 
+startGameButton : Model -> Html Msg
+startGameButton model =
+  let
+    startGameMsg = Game.startGame model.firstPlayerDropdownValue model.secondPlayerDropdownValue
+  in
+    Html.map GameMsg
+      (button
+        [ onClick startGameMsg
+        , Html.Attributes.style [ ("margin-left", "10px") ]
+        ] [ text "Start game" ])
