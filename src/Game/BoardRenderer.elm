@@ -13,9 +13,12 @@ type Msg
 
 render : Board -> Html Msg
 render board =
-  --Svg.g [] (Board.map drawField board)
-  Svg.g [] []
+  Svg.g [] (drawFields board)
 
-drawField : Int -> Int -> Field -> Html Msg
-drawField rowIndex colIndex field =
-  Svg.rect [ x (toString colIndex), y (toString rowIndex), width "50", height "100" ] []
+drawFields : Board -> List (Html Msg)
+drawFields board =
+  (Board.reduce drawRowIntoGroup [] board)
+
+drawRowIntoGroup : Int -> Int -> Field -> List (Html Msg) -> List (Html Msg)
+drawRowIntoGroup rowIndex colIndex field acc =
+  [Svg.rect [ x (toString colIndex), y (toString rowIndex), width "50", height "100" ] []]
