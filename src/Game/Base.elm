@@ -25,7 +25,7 @@ type alias Model =
 
 type Msg
   = StartGame Player Player
-  | BoardMsg BoardRenderer.Msg
+  | OnFieldClick Int Int
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -40,12 +40,12 @@ update msg model =
           }
       in
         (newModel, Cmd.none)
-    BoardMsg boardMsg ->
+    OnFieldClick rowIndex colIndex ->
       (model, Cmd.none)
 
 view : Model -> Html Msg
 view model =
-  Html.map BoardMsg (BoardRenderer.render model.board)
+  BoardRenderer.render OnFieldClick model.board
 
 initialState : Model
 initialState =
