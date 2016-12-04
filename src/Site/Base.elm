@@ -80,7 +80,7 @@ gameSettingsContainer children =
 svgContainer : List (Html Msg) -> Html Msg
 svgContainer children =
   svg
-    [ viewBox "0 0 1000 1000", Svg.Attributes.style "width: 100%; height: 100%;" ]
+    [ viewBox "0 0 1000 1000", Svg.Attributes.style "width: 90%; height: 90%;" ]
     children
 
 selectPlayerType : (String -> Msg) -> Html Msg
