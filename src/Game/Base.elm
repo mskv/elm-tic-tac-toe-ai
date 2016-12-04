@@ -1,6 +1,8 @@
-module Game.Base exposing (initialState, update, view, Model, Msg, startGame)
+module Game.Base exposing (initialState, update, view, Msg, startGame)
 
 import Html exposing (Html)
+
+import Game.Model exposing (GameState(..), Model)
 
 import Game.Player exposing (..)
 import Game.Player exposing (PlayerType(..))
@@ -8,20 +10,9 @@ import Game.Player exposing (Team(..))
 import Game.BoardRenderer as BoardRenderer
 import Game.Board as Board
 import Game.Board exposing (Board)
+import Game.Logic.Human as HumanLogic
 
 import Debug
-
-type GameState
-  = Stopped
-  | Turn Player
-  | Winner Player
-
-type alias Model =
-  { gameState : GameState
-  , player1 : Player
-  , player2 : Player
-  , board : Board
-  }
 
 type Msg
   = StartGame Player Player
@@ -35,13 +26,28 @@ update msg model =
         newModel =
           { model |
             gameState = Turn player1
+          , board = Board.initFiveByFive
           , player1 = player1
           , player2 = player2
           }
       in
         (newModel, Cmd.none)
+
     OnFieldClick rowIndex colIndex ->
-      (model, Cmd.none)
+      case model.gameState of
+        Turn player ->
+          case player.playerType of
+            AI -> (model, Cmd.none)
+
+            Human ->
+              let
+                newGame = HumanLogic.makeMove model player rowIndex colIndex
+              in
+                (newGame, Cmd.none)
+
+            None -> (model, Cmd.none)
+
+        _ -> (model, Cmd.none)
 
 view : Model -> Html Msg
 view model =

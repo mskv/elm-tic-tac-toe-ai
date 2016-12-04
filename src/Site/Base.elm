@@ -8,12 +8,13 @@ import Svg.Attributes exposing (..)
 import Json.Decode as Json
 
 import Game.Base as Game
+import Game.Model as GameModel
 import Game.Player exposing (..)
 
 import Debug
 
 type alias Model =
-  { game : Game.Model
+  { game : GameModel.Model
   , firstPlayerDropdownValue : String
   , secondPlayerDropdownValue : String
   }
@@ -44,11 +45,12 @@ view : Model -> Html Msg
 view model =
   pageContainer
     [ gameSettingsContainer
-        [ span [] [ text "First player: " ]
+        [ span [] [ text "Cross: " ]
         , selectPlayerType SelectFirstPlayerType
-        , span [ Html.Attributes.style [ ("margin-left", "10px") ] ] [ text "Second player: " ]
+        , span [ Html.Attributes.style [ ("margin-left", "10px") ] ] [ text "Circle: " ]
         , selectPlayerType SelectSecondPlayerType
         , startGameButton model
+        , gameStateDescription model.game
         ]
     , svgContainer
         [ Html.map GameMsg (Game.view model.game) ]
@@ -100,3 +102,21 @@ startGameButton model =
         [ onClick startGameMsg
         , Html.Attributes.style [ ("margin-left", "10px") ]
         ] [ text "Start game" ])
+
+gameStateDescription : GameModel.Model -> Html Msg
+gameStateDescription game =
+  let
+    label = case game.gameState of
+      GameModel.Stopped -> "Start the game"
+      GameModel.Draw -> "Draw!"
+      GameModel.Turn player -> (playerTeamToLabel player) ++ "'s turn"
+      GameModel.Winner player -> (playerTeamToLabel player) ++ " has won!"
+  in
+    div [ Html.Attributes.style [ ("margin-left", "10px") ] ] [ text label ]
+
+playerTeamToLabel : Player -> String
+playerTeamToLabel player =
+  if player.team == Cross then
+    "Cross"
+  else
+    "Circle"
