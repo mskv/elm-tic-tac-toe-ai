@@ -41,3 +41,8 @@ reduce fn initAcc board =
 listWithIndices : List a -> List (a, Int)
 listWithIndices list =
   List.map2 (,) list (List.range 0 ((List.length list) - 1))
+
+size : Board -> Int
+size board =
+  List.length board
+

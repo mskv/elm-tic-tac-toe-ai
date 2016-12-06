@@ -20,17 +20,22 @@ makeMove currentGame currentPlayer changedRowIndex changedColIndex =
         else
           acc) False
 
-    newBoard = if fieldIsTaken then currentGame.board else currentGame.board |>
-      Board.map (\rowIndex colIndex field ->
-        if changedRowIndex == rowIndex && changedColIndex == colIndex then
-          if currentPlayer.team == Player.Cross then Board.Cross else Board.Circle
-        else
-          field)
+    newBoard = if fieldIsTaken then currentGame.board else
+      markBoardPosition currentGame.board currentPlayer changedRowIndex changedColIndex
 
     newGameState = if fieldIsTaken then currentGame.gameState else
       checkGameState currentGame newBoard currentPlayer changedRowIndex changedColIndex
   in
     { currentGame | board = newBoard, gameState = newGameState }
+
+markBoardPosition : Board -> Player -> Int -> Int -> Board
+markBoardPosition board player markedRowIndex markedColIndex =
+  board |>
+    Board.map (\rowIndex colIndex field ->
+      if markedRowIndex == rowIndex && markedColIndex == colIndex then
+        if player.team == Player.Cross then Board.Cross else Board.Circle
+      else
+        field)
 
 checkGameState : Model -> Board -> Player -> Int -> Int -> GameState
 checkGameState currentGame newBoard currentPlayer changedRowIndex changedColIndex =

@@ -11,6 +11,7 @@ import Game.BoardRenderer as BoardRenderer
 import Game.Board as Board
 import Game.Board exposing (Board)
 import Game.Logic.Human as HumanLogic
+import Game.Logic.AI as AILogic
 
 import Debug
 
@@ -37,7 +38,11 @@ update msg model =
       case model.gameState of
         Turn player ->
           case player.playerType of
-            AI -> (model, Cmd.none)
+            AI ->
+              let
+                newGame = AILogic.makeMove model player
+              in
+                (newGame, Cmd.none)
 
             Human ->
               let
