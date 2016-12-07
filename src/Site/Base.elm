@@ -109,7 +109,8 @@ gameStateDescription game =
     label = case game.gameState of
       GameModel.Stopped -> "Start the game"
       GameModel.Draw -> "Draw!"
-      GameModel.Turn player -> (playerTeamToLabel player) ++ "'s turn"
+      GameModel.Turn player -> (playerTeamToLabel player) ++ "'s turn" ++
+        (if player.playerType == AI then " - click anywhere to trigger an AI move" else "")
       GameModel.Winner player -> (playerTeamToLabel player) ++ " has won!"
   in
     div [ Html.Attributes.style [ ("margin-left", "10px") ] ] [ text label ]
